@@ -1,0 +1,124 @@
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --text: #15171a;
+  --muted: #646b75;
+  --border: #dde1e6;
+  --accent: #1f6feb;
+  --accent-text: #ffffff;
+  --danger: #e5383b;
+  --box: #ff3b30;
+  --radius: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1114;
+    --surface: #181b20;
+    --text: #e8eaed;
+    --muted: #9aa1ab;
+    --border: #2b3038;
+    --accent: #4c8dff;
+    --danger: #ff6b6e;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+h1 { font-size: 1.5rem; margin: 0 0 4px; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+
+.topbar {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10;
+}
+.brand { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--box); }
+nav { margin-left: auto; display: flex; gap: 4px; }
+.tab {
+  border: 0; background: none; color: var(--muted); padding: 6px 12px;
+  border-radius: 8px; cursor: pointer; font: inherit;
+}
+.tab.active { background: var(--bg); color: var(--text); font-weight: 600; }
+
+main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+
+form { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+label { display: flex; flex-direction: column; gap: 6px; font-weight: 500; }
+input, select, textarea {
+  font: inherit; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px; width: 100%;
+}
+textarea { resize: vertical; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+.row { display: flex; gap: 8px; }
+.row input { flex: 1; }
+
+.btn {
+  font: inherit; border-radius: 8px; padding: 8px 14px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+}
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; padding: 10px 20px; }
+.btn.primary:disabled { opacity: .6; cursor: progress; }
+.btn.ghost:hover { border-color: var(--muted); }
+
+.dropzone {
+  border: 2px dashed var(--border); border-radius: var(--radius); background: var(--surface);
+  padding: 40px 16px; text-align: center; cursor: pointer; font-weight: 400;
+}
+.dropzone.drag, .dropzone:hover { border-color: var(--accent); }
+
+.editor { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; }
+.editor-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; font-size: 14px; }
+.spacer { flex: 1; }
+
+/* The stage hugs the media; the draw layer and boxes are positioned over it in % units. */
+/* The wrapper shrinks to the media's exact rendered size (no letterboxing),
+   so fractional box coordinates always line up with the actual picture. */
+.media-frame { background: #000; border-radius: 8px; overflow: hidden; }
+.stage, .media-wrap { position: relative; line-height: 0; width: fit-content; max-width: 100%; margin: 0 auto; overflow: hidden; }
+.stage img, .stage video, .media-wrap img, .media-wrap video { display: block; max-width: 100%; height: auto; }
+.stage img, .stage video { max-height: 70vh; }
+.media-wrap img, .media-wrap video { max-height: 360px; }
+.draw-layer { position: absolute; inset: 0; cursor: crosshair; touch-action: none; }
+.draw-layer.off { pointer-events: none; cursor: default; }
+
+.bbox {
+  position: absolute; border: 3px solid var(--box); border-radius: 3px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, .25), 0 0 12px rgba(255, 59, 48, .6);
+  pointer-events: none; line-height: 1.2;
+}
+.bbox-label {
+  position: absolute; left: -3px; bottom: 100%; white-space: nowrap;
+  background: var(--box); color: #fff; font-size: 12px; font-weight: 600;
+  padding: 2px 6px; border-radius: 3px 3px 0 0;
+}
+.bbox.flip .bbox-label { bottom: auto; top: 100%; border-radius: 0 0 3px 3px; }
+.bbox.dim { opacity: .25; box-shadow: none; }
+
+.actions { display: flex; align-items: center; gap: 16px; justify-content: flex-end; }
+.error { color: var(--danger); margin: 0; margin-right: auto; }
+
+.feed-head { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: space-between; margin-bottom: 16px; }
+.feed-head select { width: auto; }
+.feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.card .media-wrap { border-radius: 0; }
+.card-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+.card-title { font-weight: 600; }
+.card-meta { font-size: 13px; color: var(--muted); }
+.card-actions { display: flex; gap: 8px; margin-top: 6px; }
+.card-actions .btn { padding: 4px 10px; font-size: 13px; }
+.link { color: var(--accent); }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-weight: 500;
+}

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Report a Violation</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="dot"></span> LetsDriveSafer · Community Reports</div>
+    <nav>
+      <button class="tab active" data-view="report">Report</button>
+      <button class="tab" data-view="feed">Reports feed</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ REPORT VIEW ============ -->
+    <section id="view-report" class="view">
+      <h1>Report unsafe driving</h1>
+      <p class="muted">Upload a photo or video, then drag a box around where the violation happened.</p>
+
+      <form id="report-form" novalidate>
+        <label class="dropzone" id="dropzone">
+          <input type="file" id="media-input" accept="image/*,video/mp4,video/quicktime,video/webm" hidden />
+          <span id="dropzone-text"><strong>Choose a photo or video</strong> or drop it here<br><small>JPG, PNG, MP4, MOV, WEBM · max 50 MB</small></span>
+        </label>
+
+        <div id="editor" class="editor" hidden>
+          <div class="editor-toolbar">
+            <span id="editor-hint">Drag on the image to mark the violation.</span>
+            <span class="spacer"></span>
+            <button type="button" class="btn ghost" id="mark-btn" hidden>Pause &amp; mark frame</button>
+            <button type="button" class="btn ghost" id="clear-box">Clear box</button>
+            <button type="button" class="btn ghost" id="change-file">Change file</button>
+          </div>
+          <div class="media-frame">
+            <div class="stage" id="stage">
+              <!-- media element is injected here -->
+              <div class="draw-layer" id="draw-layer">
+                <div class="bbox" id="bbox" hidden><span class="bbox-label" id="bbox-label"></span></div>
+              </div>
+            </div>
+          </div>
+          <p class="muted small" id="box-status">No box drawn yet.</p>
+        </div>
+
+        <div class="grid">
+          <label>Violation type
+            <select id="violation-type" required>
+              <option value="">Select…</option>
+            </select>
+          </label>
+          <label>Location
+            <div class="row">
+              <input id="location" placeholder="e.g. Main St & 5th Ave" maxlength="200" />
+              <button type="button" class="btn ghost" id="geo-btn" title="Use my current location">📍</button>
+            </div>
+            <small class="muted" id="geo-status"></small>
+          </label>
+        </div>
+        <label>What happened? <span class="muted">(optional)</span>
+          <textarea id="description" rows="3" maxlength="1000" placeholder="White SUV rolled through the stop sign while kids were crossing…"></textarea>
+        </label>
+
+        <div class="actions">
+          <p class="error" id="form-error" role="alert"></p>
+          <button type="submit" class="btn primary" id="submit-btn">Submit report</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ FEED VIEW ============ -->
+    <section id="view-feed" class="view" hidden>
+      <div class="feed-head">
+        <h1>Reports feed</h1>
+        <select id="filter-type"><option value="">All violation types</option></select>
+      </div>
+      <p class="muted" id="feed-empty" hidden>No reports yet. Be the first to submit one.</p>
+      <div class="feed" id="feed"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" hidden></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
