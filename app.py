@@ -197,7 +197,64 @@ def uploads(filename):
     return send_from_directory(UPLOAD_DIR, filename)
 
 
+DEMO_REPORTS = [
+    {
+        "file": "stop-sign.jpg",
+        "violation_type": "stop_sign",
+        "bbox": {"x": 0.322, "y": 0.548, "w": 0.442, "h": 0.228},
+        "location": "Clarendon Ave & Panorama Dr",
+        "description": "Orange coupe rolled through the all-way stop without stopping.",
+        "latitude": 37.7531,
+        "longitude": -122.4560,
+    },
+    {
+        "file": "red-light.jpg",
+        "violation_type": "red_light",
+        "bbox": {"x": 0.43, "y": 0.725, "w": 0.335, "h": 0.12},
+        "location": "Le Loi Ave & Hung Vuong St",
+        "description": "SUV and two scooters entered the intersection after the light turned red.",
+        "latitude": None,
+        "longitude": None,
+    },
+]
+
+
+def seed_demo():
+    """When SEED_DEMO=1 and there are no reports, add sample reports.
+
+    Free hosting tiers wipe the disk on restart, so this keeps a live demo from looking empty.
+    """
+    if os.environ.get("SEED_DEMO") != "1":
+        return
+    import shutil
+
+    with sqlite3.connect(DB_PATH) as db:
+        if db.execute("SELECT COUNT(*) FROM reports").fetchone()[0]:
+            return
+        for r in DEMO_REPORTS:
+            report_id = uuid.uuid4().hex
+            filename = f"{report_id}.jpg"
+            shutil.copy(os.path.join(BASE_DIR, "demo", r["file"]), os.path.join(UPLOAD_DIR, filename))
+            db.execute(
+                """INSERT INTO reports (id, created_at, violation_type, description, location,
+                   latitude, longitude, media_file, media_kind, bbox, video_time)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'image', ?, NULL)""",
+                (
+                    report_id,
+                    datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                    r["violation_type"],
+                    r["description"],
+                    r["location"],
+                    r["latitude"],
+                    r["longitude"],
+                    filename,
+                    json.dumps(r["bbox"]),
+                ),
+            )
+
+
 init_db()
+seed_demo()
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5050))
